@@ -1,5 +1,7 @@
 import Peer from 'simple-peer/simplepeer.min.js';
 
+const PRODUCTION_SIGNALING_URL = 'wss://only-for-lalith.onrender.com';
+
 class EventEmitter {
     constructor() {
         this.events = {};
@@ -40,12 +42,14 @@ class WebRTCService extends EventEmitter {
     }
 
     static getDefaultServerUrl() {
-        if (typeof window === 'undefined') {
-            return 'ws://localhost:8081';
-        }
+        const envUrl = import.meta.env?.VITE_SIGNALING_SERVER_URL?.trim();
+        const signalingUrl = envUrl || PRODUCTION_SIGNALING_URL;
 
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        return `${protocol}//${window.location.hostname}:8081`;
+        console.log('ENV_URL =', envUrl || '(not set)');
+        console.log('BUILD_TIMESTAMP =', new Date().toISOString());
+        console.log('SIGNALING_URL =', signalingUrl);
+
+        return signalingUrl;
     }
 
     log(tag, payload = {}) {
@@ -58,6 +62,7 @@ class WebRTCService extends EventEmitter {
 
     connectSocket() {
         if (this.ws) return;
+        console.log('SIGNALING_URL =', this.serverUrl);
         this.ws = new WebSocket(this.serverUrl);
         
         this.ws.onmessage = (event) => {

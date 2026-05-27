@@ -10,8 +10,10 @@ app.get('/', (req, res) => {
     res.send('Only For Lalith Signaling Server is running.');
 });
 
-const server = app.listen(8081, () => {
-    console.log('Signaling server running on port 8081');
+const PORT = process.env.PORT || 3001;
+
+const server = app.listen(PORT, () => {
+    console.log(`Signaling server running on port ${PORT}`);
 });
 
 const wss = new WebSocketServer({ server });

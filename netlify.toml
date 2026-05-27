@@ -1,0 +1,7 @@
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_SIGNALING_SERVER_URL = "wss://only-for-lalith.onrender.com"
